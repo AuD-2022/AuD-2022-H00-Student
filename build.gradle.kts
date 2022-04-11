@@ -1,9 +1,7 @@
-import org.sourcegrade.submitter.submit
-
 plugins {
     java
     application
-    id("org.sourcegrade.submitter").version("0.4.0")
+    id("org.sourcegrade.submitter") version "0.5.0"
 }
 
 submit {
@@ -13,6 +11,8 @@ submit {
     lastName = null
     // Optionally require tests for prepareSubmission task. Default is true
     requireTests = true
+    // Optionally require public tests for prepareSubmission task. Default is false
+    requirePublicTests = true
 }
 
 // !! Achtung !!
@@ -22,6 +22,12 @@ submit {
 
 repositories {
     mavenCentral()
+}
+
+val publicTest: SourceSet by sourceSets.creating {
+    val test = sourceSets.test.get()
+    compileClasspath += test.output + test.compileClasspath
+    runtimeClasspath += output + test.runtimeClasspath
 }
 
 dependencies {
@@ -48,6 +54,19 @@ tasks {
         }
         workingDir = runDir
         useJUnitPlatform()
+    }
+    val publicTest by creating(Test::class) {
+        group = "verification"
+        doFirst {
+            runDir.mkdirs()
+        }
+        workingDir = runDir
+        testClassesDirs = publicTest.output.classesDirs
+        classpath = publicTest.compileClasspath + publicTest.runtimeClasspath
+        useJUnitPlatform()
+    }
+    named("check") {
+        dependsOn(publicTest)
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
