@@ -12,7 +12,7 @@ submit {
     // Optionally require tests for prepareSubmission task. Default is true
     requireTests = true
     // Optionally require public tests for prepareSubmission task. Default is false
-    requirePublicTests = true
+    requirePublicTests = false
 }
 
 // !! Achtung !!
