@@ -1,7 +1,7 @@
 plugins {
     java
     application
-    id("org.sourcegrade.submitter") version "0.5.0"
+    id("org.sourcegrade.submitter") version "0.5.1"
 }
 
 submit {
